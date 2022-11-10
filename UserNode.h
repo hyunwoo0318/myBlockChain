@@ -28,7 +28,6 @@ public:
 
 	Transaction sellProductTX(Product* product, char* dest, string others, int price);
 
-	unsigned char* hashTX(Transaction* tx);
 
 	ECDSA_SIG* signTX(Transaction* tx, unsigned char* hashRes);
 };

@@ -1,11 +1,36 @@
-#include"utilHeader.h"
+#include"FullNode.h"
 
-/*
-FullNode
+Block FullNode::mining()
+{
+    
+}
 
-UserNode로부터 TX를 받으면 일단 검증을 한다.
-검증에 성공하면 해당 TX를 포함하여 채굴을 시도한다.
+bool FullNode::validateTX(Transaction tx)
+{
+   //1) 판매하려는 물품의 최종 소유자가 tx의 input과 같은가?
+    char* sender = tx.getInput();
+    int identifier = tx.getProduct().getIdentifier();
+    if (this->blockChain.findProductOwner(identifier) != sender)
+        return false;
 
-각각의 FullNode(개별 proces)는 blockchain을 가지고있다.
-*/
+   //2) immutable 필드값에 변화가 없는가?
+    Product txProduct = tx.getProduct();
+    Product product = this->blockChain.findProduct(identifier);
+    if (!(product == txProduct))
+        return false;
 
+   //3)서명 검증
+    char* pubKey = tx.getInput();
+    const unsigned char* digest = tx.getHashTx();
+    const ECDSA_SIG* sig = tx.getSig();
+    int ret = ECDSA_do_verify(digest, 32, sig, (EC_KEY*)pubKey);
+    if (ret != 1)
+        return false;
+
+    //valid한 TX로 판명
+    //TODO :  다른 fullNode들에게 넘기기
+
+    //자신의 txPool에 tx추가.
+    txPool.push_back(tx);
+    return true;
+}

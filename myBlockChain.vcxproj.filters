@@ -16,9 +16,6 @@
     <Filter Include="소스 파일\node">
       <UniqueIdentifier>{68070a5b-999d-4ad6-a8f3-bea20763069f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\block">
-      <UniqueIdentifier>{016e70fd-34b5-484a-b0ad-8b69ee3cd685}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Data">
       <UniqueIdentifier>{e70be0eb-3bcc-49ef-82d6-db88c9f7d7b8}</UniqueIdentifier>
     </Filter>
@@ -33,11 +30,8 @@
     <ClCompile Include="MasterNode.cpp">
       <Filter>소스 파일\node</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>소스 파일\block</Filter>
-    </ClCompile>
-    <ClCompile Include="MiningConst.cpp">
-      <Filter>소스 파일\block</Filter>
+    <ClCompile Include="data.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +42,9 @@
       <Filter>소스 파일\Data</Filter>
     </ClInclude>
     <ClInclude Include="UserNode.h">
+      <Filter>소스 파일\node</Filter>
+    </ClInclude>
+    <ClInclude Include="FullNode.h">
       <Filter>소스 파일\node</Filter>
     </ClInclude>
   </ItemGroup>

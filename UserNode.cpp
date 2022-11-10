@@ -54,13 +54,11 @@ Transaction UserNode::createProductTX(string modelNo, int price,string others)
 	Transaction* tx = new Transaction(NULL, this->publicKey, price, others, product);
 
 	//trID를 구하는 과정
-	UserNode* userNode = new UserNode();
-	hashRes = userNode->hashTX(tx);
+	hashRes = hashT(tx);
 	tx->setTrID(hashRes);
 
 	//trID를 포함한 전체 tx를 hash해서 전체TX의 hash값을 구한다.
-	hashRes = userNode->hashTX(tx);
-	delete userNode;
+	hashRes = hashT(tx);	
 
 	//privateKey를 이용해서 서명한다.
 	ECDSA_SIG* sig = signTX(tx, hashRes);
@@ -76,13 +74,11 @@ Transaction UserNode::sellProductTX(Product* product, char* dest, string others,
 	Transaction* tx = new Transaction(this->publicKey,dest, price, others, product);
 
 	//trID를 제외한 전체 부분을 hash해서 trID를 구함
-	UserNode* userNode = new UserNode();
-	hashRes = userNode->hashTX(tx);
+	hashRes = hashT(tx);
 	tx->setTrID(hashRes);
 
 	//trID를 포함한 전체 tx를 hash해서 전체TX의 hash값을 구한다.
-	hashRes = userNode->hashTX(tx);
-	delete userNode;
+	hashRes = hashT(tx);
 
 	//privateKey를 이용해서 서명한다.
 	ECDSA_SIG* sig = signTX(tx, hashRes);
@@ -91,19 +87,8 @@ Transaction UserNode::sellProductTX(Product* product, char* dest, string others,
 	return *tx;
 }
 
-//tx를 hash함
-unsigned char* UserNode::hashTX(Transaction* tx)
-{
-	unsigned char* hashRes;
-	SHA256_CTX ctx;
-	SHA256_Init(&ctx);
-	SHA256_Update(&ctx, tx, sizeof(tx));
-	SHA256_Final(hashRes, &ctx);
-	return hashRes;
-}
 
-
-//전체 tx를 hash한 값을 구한다.
+//전체 tx를 hash한 값을 이용해 서명한다.
 ECDSA_SIG* UserNode::signTX(Transaction* tx, unsigned char* hashRes)
 {
 	ECDSA_SIG* sig;
