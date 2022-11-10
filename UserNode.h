@@ -29,4 +29,11 @@ public:
 	Transaction sellProductTX(Product* product, char* dest, string others, int price);
 
 	unsigned char* hashTX(Transaction* tx);
+
+	ECDSA_SIG* signTX(Transaction* tx, unsigned char* hashRes);
 };
+//TODO : tx를 일정한 간격으로 생성해야함.
+
+//TODO : full node로 전송해야함.
+
+//TODO : full node로 부터는 데이터를 받지않음.

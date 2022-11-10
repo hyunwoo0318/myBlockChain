@@ -43,7 +43,7 @@ private:
 	time_t tradingDate;
 	string others;
 	Product product;
-	char* sig;
+	ECDSA_SIG* sig;
 
 public:
 	Transaction(char* input, char* output, int price, string others, Product* product)
@@ -58,8 +58,6 @@ public:
 	}
 
 	void setTrID(unsigned char* trID) { this->trID = trID; }
-
-	void setSig(char* sig) { this->sig = sig; }
-
-	
+	void setSig(ECDSA_SIG* sig) { this->sig = sig; }
+		
 };
