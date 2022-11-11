@@ -1,14 +1,14 @@
 #include"FullNode.h"
 
-Block FullNode::mining()
-{
-    
-}
+//Block FullNode::mining()
+//{
+//    
+//}
 
 bool FullNode::validateTX(Transaction tx)
 {
    //1) 판매하려는 물품의 최종 소유자가 tx의 input과 같은가?
-    char* sender = tx.getInput();
+    EC_KEY* sender = tx.getInput();
     int identifier = tx.getProduct().getIdentifier();
     if (this->blockChain.findProductOwner(identifier) != sender)
         return false;
@@ -20,10 +20,10 @@ bool FullNode::validateTX(Transaction tx)
         return false;
 
    //3)서명 검증
-    char* pubKey = tx.getInput();
+    EC_KEY* pubKey = tx.getInput();
     const unsigned char* digest = tx.getHashTx();
     const ECDSA_SIG* sig = tx.getSig();
-    int ret = ECDSA_do_verify(digest, 32, sig, (EC_KEY*)pubKey);
+    int ret = ECDSA_do_verify(digest, 32, sig, pubKey);
     if (ret != 1)
         return false;
 

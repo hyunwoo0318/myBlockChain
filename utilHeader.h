@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include<openssl/ec.h>
 #include<openssl/ecdsa.h>
 #include<openssl/obj_mac.h>
 #include<openssl/bn.h>
@@ -10,6 +11,8 @@
 #include<string>
 #include<stdint.h>
 #include<list>
+#include<typeinfo>
+
 
 using namespace std;
 
@@ -17,10 +20,11 @@ using namespace std;
 template<typename T>
 unsigned char* hashT(T* t)
 {
-	unsigned char* hashRes=nullptr;
-	SHA256_CTX ctx;
-	SHA256_Init(&ctx);
-	SHA256_Update(&ctx, t, sizeof(t));
-	SHA256_Final(hashRes, &ctx);
-	return hashRes;
+	SHA256_CTX c;
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	unsigned char* ret = hash;
+	SHA256_Init(&c);
+	SHA256_Update(&c, t, sizeof(*t));
+	SHA256_Final(ret, &c);
+	return ret;
 }

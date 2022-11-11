@@ -13,8 +13,7 @@ TX를 생성하면 다른 FullNode들에게 전달한다.
 class UserNode
 {
 private:
-	char *privateKey;
-	char *publicKey;
+	EC_KEY* ecKey;
 	int identifier;
 	int nodeID;
 public:
@@ -22,14 +21,21 @@ public:
 
 	UserNode(int nodeID);
 
-	pair<char*, char*> GenerateKeyPair();
+	//pair<char*, char*> GenerateKeyPair();
 
 	Transaction createProductTX(string modelNo, int price, string others);
 
-	Transaction sellProductTX(Product* product, char* dest, string others, int price);
+	Transaction sellProductTX(Product* product, EC_KEY* dest, string others, int price);
 
 
 	ECDSA_SIG* signTX(Transaction* tx, unsigned char* hashRes);
+
+	/*char* getPrivateKey() { return this->privateKey; }
+	char* getPublicKey() { return this->publicKey; }*/
+	int getIdentifier() { return this->identifier; }
+	EC_KEY* getEcKey() { return this->ecKey; }
+
+	
 };
 //TODO : tx를 일정한 간격으로 생성해야함.
 

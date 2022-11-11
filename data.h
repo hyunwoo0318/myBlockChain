@@ -46,8 +46,8 @@ public:
 class Transaction {
 private:
 	unsigned char* trID;
-	char *input; // 송신자의 pub key
-	char *output; // 수신자의 pub key
+	EC_KEY *input; // 송신자의 pub key
+	EC_KEY *output; // 수신자의 pub key
 	int price;
 	time_t tradingDate;
 	string others;
@@ -57,7 +57,7 @@ private:
 	ECDSA_SIG* sig;
 
 public:
-	Transaction(char* input, char* output, int price, string others, Product* product)
+	Transaction(EC_KEY* input, EC_KEY* output, int price, string others, Product* product)
 	{
 		this->input = input;
 		this->output = output;
@@ -72,8 +72,8 @@ public:
 	void setSig(ECDSA_SIG* sig) { this->sig = sig; }
 	void setHashTx(const unsigned char* hashTx) { this->hashTx = hashTx; }
 	const unsigned char* getHashTx() { return this->hashTx; }
-	char* getInput() { return this->input; }
-	char* getOutput() { return this->output; }
+	EC_KEY* getInput() { return this->input; }
+	EC_KEY* getOutput() { return this->output; }
 	Product getProduct() { return this->product; }
 	ECDSA_SIG* getSig() { return this->sig; }
 		
@@ -139,7 +139,7 @@ private :
 public:
 	void insertBlock(Block prevBlock, Block curBlock);
 	//TODO : 해당 identifier를 가진 product를 소유한 주인을 찾음
-	char* findProductOwner(int identifier);
+	EC_KEY* findProductOwner(int identifier);
 	Product findProduct(int identifier);
 };
 

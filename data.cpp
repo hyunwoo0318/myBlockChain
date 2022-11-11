@@ -15,11 +15,11 @@ Header::Header(long blockNo, unsigned char* prev, uint32_t nonce,
 /*----------
 	MERKLE TREE
 ------------*/
-
-MerkleTree MerkleTree::insertTX(Transaction tx)
-{
-	return MerkleTree();
-}
+//
+//MerkleTree MerkleTree::insertTX(Transaction tx)
+//{
+//	return MerkleTree();
+//}
 
 vector<Transaction> MerkleTree::findAllTX()
 {
@@ -33,7 +33,7 @@ void BlockChain::insertBlock(Block prevBlock, Block curBlock)
 {
 }
 
-char* BlockChain::findProductOwner(int identifier)
+EC_KEY* BlockChain::findProductOwner(int identifier)
 {
 	return nullptr;
 }
