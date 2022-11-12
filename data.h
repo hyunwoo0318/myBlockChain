@@ -45,15 +45,15 @@ public:
 
 class Transaction {
 private:
-	unsigned char* trID;
+	string trID;
 	EC_KEY *input; // 송신자의 pub key
 	EC_KEY *output; // 수신자의 pub key
 	int price;
 	time_t tradingDate;
 	string others;
 	Product product;
-	//TODO : 외부에서 변경할수있는 가능성이있음 -> 없애기
-	const unsigned char * hashTx; // for verify signature
+	//for verify tx
+	string hashTx;
 	ECDSA_SIG* sig;
 
 public:
@@ -68,17 +68,21 @@ public:
 		this->product = *product;
 	}
 
-	void setTrID(unsigned char* trID) { this->trID = trID; }
+	void setTrID(string trID) { this->trID = trID; }
+	string getTrID() { return this->trID; }
 	void setSig(ECDSA_SIG* sig) { this->sig = sig; }
-	void setHashTx(const unsigned char* hashTx) { this->hashTx = hashTx; }
-	const unsigned char* getHashTx() { return this->hashTx; }
+	void setHashTx(string hashTx) { this->hashTx = hashTx; }
+	string getHashTx() { return this->hashTx; }
 	EC_KEY* getInput() { return this->input; }
 	EC_KEY* getOutput() { return this->output; }
 	Product getProduct() { return this->product; }
-	ECDSA_SIG* getSig() { return this->sig; }
-		
+	ECDSA_SIG* getSig() { return this->sig; }		
 };
 
+struct Node
+{
+	pair<string, string> value;
+};
 
 /*----------
 	MERKLE TREE
@@ -87,12 +91,13 @@ public:
 class MerkleTree
 {
 private:
-	unsigned char* node;
-	Transaction tx;
+	vector<Node> node[100];
+	vector<Transaction> leafNode[100];
 public:
+	MerkleTree() {}
 	//TODO : 함수 구현
 	// 시작할때 tx의 순서를 무작위로 섞음 -> nonce값 찾기 실패했을때를 대비
-	MerkleTree insertTX(Transaction tx);
+	void makeMerkleTree(vector<Transaction> tx);
 	//해당 block에 존재하는 모든 TX찾기.
 	vector<Transaction> findAllTX();
 
@@ -112,8 +117,7 @@ private:
 public:
 	uint32_t nonce;
 	Header(long blockNo, unsigned char* prev, uint32_t nonce,
-		unsigned char* mrkl_root_hash);
-	
+		unsigned char* mrkl_root_hash);	
 };
 
 /*----------
@@ -142,4 +146,5 @@ public:
 	EC_KEY* findProductOwner(int identifier);
 	Product findProduct(int identifier);
 };
+
 
