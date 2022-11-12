@@ -21,9 +21,10 @@ bool FullNode::validateTX(Transaction tx)
 
    //3)서명 검증
     EC_KEY* pubKey = tx.getInput();
-    const unsigned char* digest = tx.getHashTx();
+    string digest = tx.getHashTx();
+    const char* c = digest.c_str();
     const ECDSA_SIG* sig = tx.getSig();
-    int ret = ECDSA_do_verify(digest, 32, sig, pubKey);
+    int ret = ECDSA_do_verify((unsigned char*)c, 32, sig, pubKey);
     if (ret != 1)
         return false;
 
