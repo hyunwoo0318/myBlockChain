@@ -13,11 +13,10 @@ UserNode::UserNode(int nodeID)
 	EC_KEY* secpKey = nullptr;
 	secpKey = EC_KEY_new_by_curve_name(NID_secp256k1);
 	EC_KEY_generate_key(secpKey);
+
 	BIGNUM const* prv = EC_KEY_get0_private_key(secpKey);
 	EC_POINT const* pub = EC_KEY_get0_public_key(secpKey);
-	//TODO : data구조 다시 변경하기
-	cout << prv << endl << pub;
-	
+		
 	this->ecKey = secpKey;
 	this->nodeID = nodeID;
 }
@@ -55,20 +54,20 @@ UserNode::UserNode(int nodeID)
 //최초의 물건을 생성하는 TX생성
 Transaction UserNode::createProductTX(string modelNo, int price,string others)
 {
-	unsigned char* hashRes;
+	
 	Product* product = new Product(time(NULL), modelNo, this->identifier);
 	Transaction* tx = new Transaction(NULL, this->ecKey, price, others, product);
 
 	//trID를 구하는 과정
-	hashRes = hashT(tx);
+	string hashRes = hashTX(tx);	
 	tx->setTrID(hashRes);
 
 	//trID를 포함한 전체 tx를 hash해서 전체TX의 hash값을 구한다.
-	hashRes = hashT(tx);	
+	hashRes = hashTX(tx);	
 	tx->setHashTx(hashRes);
 
 	//privateKey를 이용해서 서명한다.
-	ECDSA_SIG* sig = signTX(tx, hashRes);
+	ECDSA_SIG* sig = signTX(hashRes);
 	tx->setSig(sig);
 
 	return *tx;
@@ -77,20 +76,19 @@ Transaction UserNode::createProductTX(string modelNo, int price,string others)
 //물건을 판매하는 TX 생성
 Transaction UserNode::sellProductTX(Product* product, EC_KEY* dest, string others, int price)
 {	
-	unsigned char* hashRes;
-	Transaction* tx = new Transaction(this->ecKey,dest, price, others, product);
-	
+	string hashRes;
+	Transaction* tx = new Transaction(this->ecKey,dest, price, others, product);	
 
-	//trID를 제외한 전체 부분을 hash해서 trID를 구함
-	hashRes = hashT(tx);
+	//trID를 구하는 과정
+	string hashRes = hashTX(tx);
 	tx->setTrID(hashRes);
 
 	//trID를 포함한 전체 tx를 hash해서 전체TX의 hash값을 구한다.
-	hashRes = hashT(tx);
+	hashRes = hashTX(tx);
 	tx->setHashTx(hashRes);
 
 	//privateKey를 이용해서 서명한다.
-	ECDSA_SIG* sig = signTX(tx, hashRes);
+	ECDSA_SIG* sig = signTX(hashRes);
 	tx->setSig(sig);
 
 	return *tx;
@@ -98,11 +96,12 @@ Transaction UserNode::sellProductTX(Product* product, EC_KEY* dest, string other
 
 
 //전체 tx를 hash한 값을 이용해 서명한다.
-ECDSA_SIG* UserNode::signTX(Transaction* tx, unsigned char* hashRes)
+ECDSA_SIG* UserNode::signTX(string hashRes)
 {
-	ECDSA_SIG* sig;
-	EC_KEY_generate_key(this->ecKey);
-	sig = ECDSA_do_sign(hashRes, 20, this->ecKey);
+	const char* c = hashRes.c_str();
+	ECDSA_SIG* sig;	
+	EC_KEY* key = this->ecKey;
+	sig = ECDSA_do_sign((unsigned char*) c, 20, this->ecKey);
 	return sig;
 }
 

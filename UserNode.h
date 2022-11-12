@@ -1,5 +1,5 @@
 #pragma once
-#include"utilHeader.h"
+
 #include"data.h"
 /*
 UserNode
@@ -28,7 +28,7 @@ public:
 	Transaction sellProductTX(Product* product, EC_KEY* dest, string others, int price);
 
 
-	ECDSA_SIG* signTX(Transaction* tx, unsigned char* hashRes);
+	ECDSA_SIG* signTX(string hashRes);
 
 	/*char* getPrivateKey() { return this->privateKey; }
 	char* getPublicKey() { return this->publicKey; }*/
