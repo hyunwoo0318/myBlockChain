@@ -15,6 +15,8 @@
 #include<stdint.h>
 #include<list>
 #include<typeinfo>
+#include<map>
+#include<Windows.h>
 
 using namespace std;
 
