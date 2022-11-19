@@ -4,8 +4,8 @@
 	HEADER
 ------------*/
 
-Header::Header(long blockNo, unsigned char* prev, uint32_t nonce,
-	unsigned char* mrkl_root_hash)
+Header::Header(long blockNo, HashPointer prev, uint32_t nonce,
+	string mrkl_root_hash)
 {
 	this->blockNo = blockNo;
 	this->prev = prev;
@@ -101,7 +101,15 @@ void MerkleTree::makeMerkleTree(vector<Transaction> tx)
 
 vector<Transaction> MerkleTree::findAllTX()
 {
-	//TODO : 구현
+	vector<Transaction> ret;
+	
+		for (int i = 0; i < 100; i++)
+		{
+			if ((*this->leafNode)[i].getTrID() == "")
+				break;
+			ret.push_back((*this->leafNode)[i]);
+		}	
+	return ret;
 }
 
 /*----------
@@ -109,11 +117,15 @@ vector<Transaction> MerkleTree::findAllTX()
 ------------*/
 void BlockChain::insertBlock(Block prevBlock, Block curBlock)
 {
+	HashPointer* hashPointer = new HashPointer(&prevBlock, prevBlock.getHashRes());
+	curBlock.getHeader().setHashPointer(*hashPointer);
 }
 
 EC_KEY* BlockChain::findProductOwner(int identifier)
 {
-	return nullptr;
+	//TODO : branch가 일어난 경우 더 긴 chain을 찾아야함.
+	//block의 개수를 어떻게 알지 -> blockNum을 이용?
+
 }
 
 Product BlockChain::findProduct(int identifier)

@@ -45,7 +45,7 @@ public:
 
 class Transaction {
 private:
-	string trID;
+	string trID="";
 	EC_KEY *input; // 송신자의 pub key
 	EC_KEY *output; // 수신자의 pub key
 	int price;
@@ -103,6 +103,23 @@ public:
 
 };
 
+/*----------
+	HASH POINTER
+------------*/
+class HashPointer
+{
+private:
+	Block* pointer = nullptr;
+	string prevHash;
+public:
+	HashPointer() {}
+	HashPointer(Block* pointer, string prevHash)
+	{
+		this->pointer = pointer;
+		this->prevHash = prevHash;
+	}
+};
+
 
 
 /*----------
@@ -112,12 +129,14 @@ class Header
 {
 private:
 	long blockNo;
-	unsigned char* prev;	
-	unsigned char* mrkl_root_hash;
+	HashPointer prev;	
+	string mrkl_root_hash;
 public:
 	uint32_t nonce;
-	Header(long blockNo, unsigned char* prev, uint32_t nonce,
-		unsigned char* mrkl_root_hash);	
+	Header() {}
+	Header(long blockNo, HashPointer prev, uint32_t nonce,
+		string mrkl_root_hash);	
+	void setHashPointer(HashPointer hashPointer) { this->prev = hashPointer; }
 };
 
 /*----------
@@ -128,9 +147,23 @@ class Block
 private:
 	Header header;
 	MerkleTree merkleTree;
-	unsigned char* hashRes;
+	string hashRes;
 public:
-	unsigned char* getHashRes() { return hashRes; }
+	Block(Header header, MerkleTree merkleTree)
+	{
+		this->header = header;
+		this->merkleTree = merkleTree;
+		string hashRes = hashTX(header) + hashTX(merkleTree);
+		this->hashRes = hashRes;
+	}
+	void changeHeaderHash(string headerHashRes)
+	{
+		string hashRes = headerHashRes + hashTX(this->merkleTree);
+		this->hashRes = hashRes;
+	}
+	Header getHeader() { return this->header; }
+	void setHashRes(string hashRes) { this->hashRes = hashRes; }
+	string getHashRes() { return hashRes; }
 };
 
 /*----------
