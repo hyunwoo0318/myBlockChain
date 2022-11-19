@@ -145,14 +145,13 @@
   <ItemGroup>
     <ClCompile Include="data.cpp" />
     <ClCompile Include="FullNode.cpp" />
+    <ClCompile Include="IPC.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UserNode.cpp" />
     <ClCompile Include="MasterNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data.h" />
-    <ClInclude Include="FullNode.h" />
-    <ClInclude Include="UserNode.h" />
     <ClInclude Include="utilHeader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

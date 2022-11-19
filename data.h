@@ -1,7 +1,6 @@
 #pragma once
 #include"utilHeader.h"
 
-
 /*----------
 	PRODUCT
 ------------*/
@@ -103,6 +102,7 @@ public:
 
 };
 
+class Block;
 /*----------
 	HASH POINTER
 ------------*/
@@ -110,7 +110,7 @@ class HashPointer
 {
 private:
 	Block* pointer = nullptr;
-	string prevHash;
+	string prevHash = NULL;
 public:
 	HashPointer() {}
 	HashPointer(Block* pointer, string prevHash)
@@ -153,12 +153,12 @@ public:
 	{
 		this->header = header;
 		this->merkleTree = merkleTree;
-		string hashRes = hashTX(header) + hashTX(merkleTree);
+		string hashRes = hashTX(&header) + hashTX(&merkleTree);
 		this->hashRes = hashRes;
 	}
 	void changeHeaderHash(string headerHashRes)
 	{
-		string hashRes = headerHashRes + hashTX(this->merkleTree);
+		string hashRes = headerHashRes + hashTX(&(this->merkleTree));
 		this->hashRes = hashRes;
 	}
 	Header getHeader() { return this->header; }
@@ -172,9 +172,10 @@ public:
 class BlockChain
 {
 private :
-	Block block;
+	vector<Block> blockChain;
 public:
-	void insertBlock(Block prevBlock, Block curBlock);
+	BlockChain() {}
+	void insertBlock(Block block);
 	//TODO : 해당 identifier를 가진 product를 소유한 주인을 찾음
 	EC_KEY* findProductOwner(int identifier);
 	Product findProduct(int identifier);

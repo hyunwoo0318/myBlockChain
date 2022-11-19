@@ -36,6 +36,9 @@
     <ClCompile Include="data.cpp">
       <Filter>소스 파일\Data</Filter>
     </ClCompile>
+    <ClCompile Include="IPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utilHeader.h">
@@ -43,12 +46,6 @@
     </ClInclude>
     <ClInclude Include="data.h">
       <Filter>소스 파일\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="UserNode.h">
-      <Filter>소스 파일\node</Filter>
-    </ClInclude>
-    <ClInclude Include="FullNode.h">
-      <Filter>소스 파일\node</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

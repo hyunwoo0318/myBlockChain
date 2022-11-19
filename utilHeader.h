@@ -18,11 +18,12 @@
 
 using namespace std;
 
-template<typename T>
-string hashTX(T t)
+template<class T>
+string hashTX(T* t)
 {
+	unsigned char* tCast = reinterpret_cast<unsigned char*>(t);
 	unsigned char* temp=nullptr;
-	unsigned char* ret = SHA256((unsigned char*)t, sizeof(t), temp);
+	unsigned char* ret = SHA256(tCast, sizeof(t), temp);
 	string s(reinterpret_cast<char*>(ret));
 	return s;
 }

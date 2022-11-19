@@ -50,8 +50,8 @@ void MerkleTree::makeMerkleTree(vector<Transaction> tx)
 			string leftValue = leftChild.value.first + leftChild.value.second;
 			string rightValue = rightChild.value.first + rightChild.value.second;
 
-			string hashLeftValue = hashTX(leftValue);
-			string hashRightValue = hashTX(rightValue);
+			string hashLeftValue = hashTX(&leftValue);
+			string hashRightValue = hashTX(&rightValue);
 
 			(*this->node)[i].value.first = hashLeftValue;
 			(*this->node)[i].value.second = hashRightValue;
@@ -80,8 +80,8 @@ void MerkleTree::makeMerkleTree(vector<Transaction> tx)
 			string leftValue = leftChild.value.first + leftChild.value.second;
 			string rightValue = rightChild.value.first + rightChild.value.second;
 
-			string hashLeftValue = hashTX(leftValue);
-			string hashRightValue = hashTX(rightValue);
+			string hashLeftValue = hashTX(&leftValue);
+			string hashRightValue = hashTX(&rightValue);
 
 			(*this->node)[i].value.first = hashLeftValue;
 			(*this->node)[i].value.second = hashRightValue;
@@ -91,7 +91,7 @@ void MerkleTree::makeMerkleTree(vector<Transaction> tx)
 		{
 			Node boundChild = (*this->node)[2 * bound + 1];
 			string childValue = boundChild.value.first + boundChild.value.second;
-			string hashValue = hashTX(childValue);
+			string hashValue = hashTX(&childValue);
 			(*this->node)[bound].value.first = hashValue;
 			(*this->node)[bound].value.second = (*this->leafNode)[idx++].getHashTx();
 		}
@@ -115,16 +115,27 @@ vector<Transaction> MerkleTree::findAllTX()
 /*----------
 	BLOCKCHAIN
 ------------*/
-void BlockChain::insertBlock(Block prevBlock, Block curBlock)
+void BlockChain::insertBlock(Block block)
 {
-	HashPointer* hashPointer = new HashPointer(&prevBlock, prevBlock.getHashRes());
-	curBlock.getHeader().setHashPointer(*hashPointer);
+	//Genesis Block
+	if (this->blockChain.size() == 0)
+	{
+		block.getHeader().setHashPointer(*(new HashPointer()));
+	}
+	else
+	{
+		Block prevBlock = (this->blockChain)[this->blockChain.size() - 1];
+		HashPointer* hashPointer = new HashPointer(&prevBlock, prevBlock.getHashRes());
+		block.getHeader().setHashPointer(*hashPointer);
+	}	
 }
 
 EC_KEY* BlockChain::findProductOwner(int identifier)
 {
 	//TODO : branch가 일어난 경우 더 긴 chain을 찾아야함.
 	//block의 개수를 어떻게 알지 -> blockNum을 이용?
+	EC_KEY* temp=NULL;
+	return temp;
 
 }
 
