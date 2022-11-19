@@ -78,8 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\OpenSSL-Win64\lib;D:\OpenSSL-Win64\lib\VC;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\OpenSSL-Win64\include;C:\Program Files\OpenSSL-Win64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\OpenSSL-Win64\lib;D:\OpenSSL-Win64\lib\VC;C:\Program Files\OpenSSL-Win64\VC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

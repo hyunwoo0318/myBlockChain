@@ -30,11 +30,11 @@
     <ClCompile Include="MasterNode.cpp">
       <Filter>소스 파일\node</Filter>
     </ClCompile>
-    <ClCompile Include="data.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="data.cpp">
+      <Filter>소스 파일\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
