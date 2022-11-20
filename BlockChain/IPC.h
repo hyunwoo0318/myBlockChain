@@ -1,5 +1,4 @@
 #pragma once
-#include"utilHeader.h"
 
 //pipe의 정보를 저장할 map선언
 extern map<string, pair<HANDLE, const TCHAR*>> pipeInfo;

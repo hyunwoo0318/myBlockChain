@@ -1,5 +1,4 @@
 #pragma once
-#include"utilHeader.h"
 
 /*----------
 	PRODUCT
@@ -110,7 +109,7 @@ class HashPointer
 {
 private:
 	Block* pointer = nullptr;
-	string prevHash = NULL;
+	string prevHash;
 public:
 	HashPointer() {}
 	HashPointer(Block* pointer, string prevHash)

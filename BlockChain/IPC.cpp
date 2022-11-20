@@ -1,4 +1,5 @@
 #include"IPC.h"
+#include"pch.h"
 
 map<string, pair<HANDLE, const TCHAR*>> pipeInfo;
 

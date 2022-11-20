@@ -1,4 +1,5 @@
-#include "data.h"
+#include "pch.h"
+#include"data.h"
 
 /*----------
 	HEADER
