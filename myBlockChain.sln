@@ -5,25 +5,57 @@ VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlockChain", "BlockChain\BlockChain.vcxproj", "{3B69FEA4-7D09-4C1E-A3C9-63E1D72D5792}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserNode0", "UserNode0\UserNode0.vcxproj", "{2D0802A6-FDDB-4BC9-9219-4F85910736E6}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode0", "FullNode0\FullNode0.vcxproj", "{97C0505F-E13E-46A0-B372-E83B97C51343}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode1", "FullNode1\FullNode1.vcxproj", "{E226D620-5E21-47D2-952E-872F7262C436}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode2", "FullNode2\FullNode2.vcxproj", "{0E186CF4-3222-4886-A82D-629B3CC3760D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode3", "FullNode3\FullNode3.vcxproj", "{641945E2-67D6-45E4-B524-2E36A7EA8E35}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode4", "FullNode4\FullNode4.vcxproj", "{B28531A4-E90E-4F38-98C5-7057F4EDC440}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FullNode5", "FullNode5\FullNode5.vcxproj", "{01646615-FCE3-4214-BD6C-F579E6396E88}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserNode1", "UserNode1\UserNode1.vcxproj", "{894FBA0A-A34D-4160-8546-A2CE2669BCDD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserNode2", "UserNode2\UserNode2.vcxproj", "{958FDD33-980B-42DD-80AF-370F80870B74}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserNode3", "UserNode3\UserNode3.vcxproj", "{69FBF2F2-750F-45F8-A469-D9B42FFAEB7A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D} = {C1F9988D-0054-4DE4-93EE-BAF52E9F369D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MasterNode", "MasterNode\MasterNode.vcxproj", "{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserNode0", "UserNode0\UserNode0.vcxproj", "{A966F3EE-F236-48BB-A85B-7D69160FEF42}"
+	ProjectSection(ProjectDependencies) = postProject
+		{97C0505F-E13E-46A0-B372-E83B97C51343} = {97C0505F-E13E-46A0-B372-E83B97C51343}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,14 +73,6 @@ Global
 		{3B69FEA4-7D09-4C1E-A3C9-63E1D72D5792}.Release|x64.Build.0 = Release|x64
 		{3B69FEA4-7D09-4C1E-A3C9-63E1D72D5792}.Release|x86.ActiveCfg = Release|Win32
 		{3B69FEA4-7D09-4C1E-A3C9-63E1D72D5792}.Release|x86.Build.0 = Release|Win32
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Debug|x64.ActiveCfg = Debug|x64
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Debug|x64.Build.0 = Debug|x64
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Debug|x86.ActiveCfg = Debug|Win32
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Debug|x86.Build.0 = Debug|Win32
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Release|x64.ActiveCfg = Release|x64
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Release|x64.Build.0 = Release|x64
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Release|x86.ActiveCfg = Release|Win32
-		{2D0802A6-FDDB-4BC9-9219-4F85910736E6}.Release|x86.Build.0 = Release|Win32
 		{97C0505F-E13E-46A0-B372-E83B97C51343}.Debug|x64.ActiveCfg = Debug|x64
 		{97C0505F-E13E-46A0-B372-E83B97C51343}.Debug|x64.Build.0 = Debug|x64
 		{97C0505F-E13E-46A0-B372-E83B97C51343}.Debug|x86.ActiveCfg = Debug|Win32
@@ -121,6 +145,22 @@ Global
 		{69FBF2F2-750F-45F8-A469-D9B42FFAEB7A}.Release|x64.Build.0 = Release|x64
 		{69FBF2F2-750F-45F8-A469-D9B42FFAEB7A}.Release|x86.ActiveCfg = Release|Win32
 		{69FBF2F2-750F-45F8-A469-D9B42FFAEB7A}.Release|x86.Build.0 = Release|Win32
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Debug|x64.ActiveCfg = Debug|x64
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Debug|x64.Build.0 = Debug|x64
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Debug|x86.ActiveCfg = Debug|Win32
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Debug|x86.Build.0 = Debug|Win32
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Release|x64.ActiveCfg = Release|x64
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Release|x64.Build.0 = Release|x64
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Release|x86.ActiveCfg = Release|Win32
+		{C1F9988D-0054-4DE4-93EE-BAF52E9F369D}.Release|x86.Build.0 = Release|Win32
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Debug|x64.ActiveCfg = Debug|x64
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Debug|x64.Build.0 = Debug|x64
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Debug|x86.ActiveCfg = Debug|Win32
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Debug|x86.Build.0 = Debug|Win32
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Release|x64.ActiveCfg = Release|x64
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Release|x64.Build.0 = Release|x64
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Release|x86.ActiveCfg = Release|Win32
+		{A966F3EE-F236-48BB-A85B-7D69160FEF42}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

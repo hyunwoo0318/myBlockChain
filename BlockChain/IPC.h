@@ -1,12 +1,11 @@
 #pragma once
 
-//pipe의 정보를 저장할 map선언
-extern map<string, pair<HANDLE, const TCHAR*>> pipeInfo;
+void readFile(HANDLE handle, TCHAR* recvBuf);
 
-pair<HANDLE, const TCHAR*> createOwnPipe(string node1, string node2);
+HANDLE makePipe(LPCSTR pipeName);
 
-string readDatas(HANDLE hPipe);
+bool openPipe(HANDLE handle);
 
-bool sendDatas(const TCHAR* pipeName, char* data, char dataType);
+HANDLE connectPipe(LPCSTR pipeName);
 
-void connectNodes();
+bool writeFile(HANDLE handle,TCHAR* pkt);
