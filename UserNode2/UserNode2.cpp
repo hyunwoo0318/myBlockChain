@@ -6,5 +6,5 @@ int main()
 	UserNode* userNode2 = new UserNode(2);
 	connectNodes();
 
-	pair<HANDLE, const TCHAR*> a = pipeInfo["F0F1"];
+	pair<HANDLE, LPCSTR> a = pipeInfo["F0F1"];
 }
