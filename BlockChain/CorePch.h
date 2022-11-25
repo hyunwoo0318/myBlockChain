@@ -1,8 +1,8 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable : 4819)
 
 #define BUFSIZE 1024
-
 
 #include<iostream>
 #include<cstdio>
@@ -25,6 +25,7 @@
 #include<thread>
 #include<mutex>
 #include<tchar.h>
+#include"PipeName.h"
 
 using namespace std;
 

@@ -80,6 +80,7 @@ public:
 	Product getProduct() { return this->product; }
 	ECDSA_SIG* getSig() { return this->sig; }
 	void serialize(TCHAR* buf);
+	void deserialize(TCHAR* buf);
 };
 
 struct Node

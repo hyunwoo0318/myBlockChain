@@ -33,6 +33,9 @@
     <ClInclude Include="UserNode.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="PipeName.h">
+      <Filter>IPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

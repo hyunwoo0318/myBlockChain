@@ -3,8 +3,20 @@
 
 int main()
 {
-	UserNode* userNode0 = new UserNode(0);
-	connectNodes();
+	UserNode* userNode3 = new UserNode(3);
+	PipeName pipeInfo;
+	
+	//임의의 tx를 주기적으로 생성함
+	Transaction* tx = new Transaction();
 
-	pair<HANDLE, LPCSTR> a = pipeInfo["F0F1"];
+	//F0과 통신
+	while(1)
+	{
+		LPCSTR pipeName = pipeInfo.U3F0;		
+		if (UserToFullClient(pipeName, tx))
+			break;
+	}
+
+
+	
 }

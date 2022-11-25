@@ -101,3 +101,46 @@ bool writeFile(HANDLE handle, TCHAR* pkt)
 		return false;
 	}
 }
+
+bool UserToFullClient(LPCSTR pipeName, Transaction* sendTx)
+{
+	TCHAR sendBuf[BUFSIZE];
+	HANDLE h = connectPipe(pipeName);
+	sendTx->serialize(sendBuf);
+	return writeFile(h, sendBuf);	
+}
+
+Transaction* UserToFullServer(LPCSTR pipeName)
+{
+	TCHAR recvBuf[BUFSIZE];
+	Transaction* tx = new Transaction();
+	while (1)
+	{		
+		HANDLE hU3F0 = makePipe(pipeName);
+		if (openPipe(hU3F0))
+		{
+			readFile(hU3F0, recvBuf);
+			break;
+		}
+		//UserNode로 부터는 tx만 받으므로 따로 타입을 체크할 필요없음		
+		tx->deserialize(recvBuf);
+	}
+	return tx;
+}
+
+void FullToFullClient(LPCSTR pipeName)
+{
+
+}
+
+void FullToFUllServer(LPCSTR pipeName)
+{
+}
+
+void MasterToFullClient(LPCSTR pipeName)
+{
+}
+
+void MasterToFullServer(LPCSTR pipeName)
+{
+}

@@ -230,3 +230,8 @@ void Transaction::serialize(TCHAR* buf)
 		c++;
 	}	
 }
+
+void Transaction::deserialize(TCHAR* buf)
+{
+	
+}

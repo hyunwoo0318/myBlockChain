@@ -1,7 +1,11 @@
 ﻿#include"pch.h"
 #include"FullNode.h"
 
+//F3는 F1, F4과 연결
 int main()
 {
-	FullNode* fullNode0 = new FullNode(0);
+	PipeName pInfo;
+	FullNode* fullNode3 = new FullNode(3);
+		
+
 }

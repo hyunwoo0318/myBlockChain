@@ -4,18 +4,16 @@
 int main()
 {
 	UserNode* userNode0 = new UserNode(0);
-	
-	//F0와의 통신 -> 클라의 역할
-	
-	string s = "\\\\.\\pipe\\UTOF";
-	LPCSTR pipeName = (LPCSTR)s.c_str();
-	
-	HANDLE hUTOF = connectPipe(pipeName);
-	char msg[] = "modelNumber";
-	Product* p = new Product(time(nullptr), 123123, msg);
-	TCHAR sendBuf[BUFSIZE];
-	p->serialize(sendBuf);
-	writeFile(hUTOF,sendBuf);
+	PipeName pipeInfo;
 
-	CloseHandle(hUTOF);
+	//임의의 tx를 주기적으로 생성함
+	Transaction* tx = new Transaction();
+
+	//F0과 통신
+	while (1)
+	{
+		LPCSTR pipeName = pipeInfo.U0F1;
+		if (UserToFullClient(pipeName, tx))
+			break;
+	}
 }

@@ -173,6 +173,7 @@
     <ClInclude Include="FullNode.h" />
     <ClInclude Include="IPC.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PipeName.h" />
     <ClInclude Include="UserNode.h" />
   </ItemGroup>
   <ItemGroup>
