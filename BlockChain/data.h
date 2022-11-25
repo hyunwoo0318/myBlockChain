@@ -7,21 +7,21 @@
 class Product
 {
 private:
-	time_t manufacturedDate;
-	string modelNo;
+	time_t manufacturedDate;	
 	int identifier;
+	char modelNo[50];
 
 public:
 	Product() {};
 
-	Product(time_t date, string modelNo, int identifier)
+	Product(time_t date,int identifier , char* modelNo )
 	{
 		this->manufacturedDate = date;
-		this->modelNo = modelNo;
+		strcpy(this->modelNo, modelNo);
 		this->identifier = identifier;
 	};
 
-	string getModelNo() { return this->modelNo; }
+	char* getModelNo() { return this->modelNo; }
 	int getIdentifier() { return this->identifier; }
 	time_t getDate() { return this->manufacturedDate; }
 
@@ -34,6 +34,9 @@ public:
 		else return false;
 	}
 
+	void serialize(TCHAR* retBuf);
+
+	void deSerialize(TCHAR* retBuf);
 
 };
 
@@ -42,43 +45,46 @@ public:
 ------------*/
 
 class Transaction {
-private:
-	string trID="";
+private:	
 	EC_KEY *input; // 송신자의 pub key
 	EC_KEY *output; // 수신자의 pub key
-	int price;
-	time_t tradingDate;
-	string others;
-	Product product;
-	//for verify tx
-	string hashTx;
 	ECDSA_SIG* sig;
+	int price;
+	time_t tradingDate;	
+	
+	char trID[256] = "";
+	char hashTx[256];
+	char others[50];
 
+	Product product;
 public:
-	Transaction(EC_KEY* input, EC_KEY* output, int price, string others, Product* product)
+	Transaction() {}
+	Transaction(EC_KEY* input, EC_KEY* output, int price, char* others, Product* product)
 	{
 		this->input = input;
 		this->output = output;
 		this->price = price;
-		this->others = others;
+		strcpy(this->others, others);
 
 		this->tradingDate = time(nullptr);
 		this->product = *product;
 	}
 
-	void setTrID(string trID) { this->trID = trID; }
-	string getTrID() { return this->trID; }
+	void setTrID(char* trID) { strcpy(this->trID, trID); }
+	char* getTrID() { return this->trID; }
 	void setSig(ECDSA_SIG* sig) { this->sig = sig; }
-	void setHashTx(string hashTx) { this->hashTx = hashTx; }
-	string getHashTx() { return this->hashTx; }
+	void setHashTx(char* hashTx) { strcpy(this->hashTx, hashTx); }
+	char* getHashTx() { return this->hashTx; }
 	EC_KEY* getInput() { return this->input; }
 	EC_KEY* getOutput() { return this->output; }
 	Product getProduct() { return this->product; }
-	ECDSA_SIG* getSig() { return this->sig; }		
+	ECDSA_SIG* getSig() { return this->sig; }
+	void serialize(TCHAR* buf);
 };
 
 struct Node
 {
+	//양 child의 hash값을 가짐
 	pair<string, string> value;
 };
 
@@ -92,14 +98,15 @@ private:
 	vector<Node> node[100];
 	vector<Transaction> leafNode[100];
 public:
-	MerkleTree() {}
-	//TODO : 함수 구현
+	MerkleTree() {}	
 	// 시작할때 tx의 순서를 무작위로 섞음 -> nonce값 찾기 실패했을때를 대비
-	void makeMerkleTree(vector<Transaction> tx);
+	void makeMerkleTree(const vector<Transaction> &tx);
 	//해당 block에 존재하는 모든 TX찾기.
 	vector<Transaction> findAllTX();
+	string getRootHash();
 
 };
+
 
 class Block;
 /*----------
@@ -124,18 +131,22 @@ public:
 /*----------
 	HEADER
 ------------*/
-class Header
+class Header 
 {
 private:
 	long blockNo;
 	HashPointer prev;	
-	string mrkl_root_hash;
+	string mrklRootHash;
 public:
 	uint32_t nonce;
 	Header() {}
+	Header(long blockNo, HashPointer prev, string mrklRootHash)
+		:blockNo(blockNo), prev(prev), mrklRootHash(mrklRootHash) {}
 	Header(long blockNo, HashPointer prev, uint32_t nonce,
-		string mrkl_root_hash);	
+		string mrklRootHash);	
+	long getBlockNo() { return this->blockNo; }
 	void setHashPointer(HashPointer hashPointer) { this->prev = hashPointer; }
+	void setMrklRootHash(string mrklRootHash) { this->mrklRootHash = mrklRootHash; }
 };
 
 /*----------
@@ -148,16 +159,14 @@ private:
 	MerkleTree merkleTree;
 	string hashRes;
 public:
+	
+	Block() {}
+	
 	Block(Header header, MerkleTree merkleTree)
 	{
 		this->header = header;
 		this->merkleTree = merkleTree;
-		string hashRes = hashTX(&header) + hashTX(&merkleTree);
-		this->hashRes = hashRes;
-	}
-	void changeHeaderHash(string headerHashRes)
-	{
-		string hashRes = headerHashRes + hashTX(&(this->merkleTree));
+		string hashRes = hashTX(&header);
 		this->hashRes = hashRes;
 	}
 	Header getHeader() { return this->header; }
@@ -168,13 +177,15 @@ public:
 /*----------
 	BLOCKCHAIN
 ------------*/
-class BlockChain
+class BlockChain 
 {
 private :
 	vector<Block> blockChain;
 public:
+
 	BlockChain() {}
 	void insertBlock(Block block);
+	Block getLastBlock();
 	//TODO : 해당 identifier를 가진 product를 소유한 주인을 찾음
 	EC_KEY* findProductOwner(int identifier);
 	Product findProduct(int identifier);

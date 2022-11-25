@@ -1,4 +1,9 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
+
+#define BUFSIZE 1024
+
+
 #include<iostream>
 #include<cstdio>
 #include<openssl/ec.h>
@@ -17,6 +22,9 @@
 #include<typeinfo>
 #include<map>
 #include<Windows.h>
+#include<thread>
+#include<mutex>
+#include<tchar.h>
 
 using namespace std;
 

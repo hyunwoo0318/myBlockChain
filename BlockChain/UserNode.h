@@ -11,10 +11,10 @@ private:
 public:
 	UserNode(int nodeID);	
 
-	Transaction createProductTX(string modelNo, int price, string others);
+	Transaction createProductTX(char* modelNo, int price, char* others);
 	
 
-	Transaction sellProductTX(Product* product, EC_KEY* dest, string others, int price);
+	Transaction sellProductTX(Product* product, EC_KEY* dest, char* others, int price);
 
 
 	ECDSA_SIG* signTX(string hashRes);

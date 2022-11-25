@@ -1,5 +1,6 @@
 #pragma once
 #include"data.h"
+#define TARGET_NUM (0x00ffffff)
 
 class FullNode
 {
@@ -10,13 +11,13 @@ private:
 public:
     FullNode(int nodeNum);
    
-    //Block mining();
+    Block mining();
     bool validateTX(Transaction tx);
     
 };
 
 //TODO List
-//1. full node´Â °è¼Ó block°ú TX¸¦ ¹ÞÀ½.
-//2. validÇÑ tx¿Í Ã¤±¼ ¼º°øÇÑ blockÀº ³Ñ°ÜÁÜ.
-//3. userNode·Î´Â ¾Æ¹«°Íµµ º¸³»Áö¾ÊÀ½
-//4. FullNode, userNode³¢¸® ÁÖ¾îÁø topology´ë·Î ¿¬°á.
+//1. full nodeï¿½ï¿½ ï¿½ï¿½ï¿½ blockï¿½ï¿½ TXï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+//2. validï¿½ï¿½ txï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ blockï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½.
+//3. userNodeï¿½Î´ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//4. FullNode, userNodeï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ topologyï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.

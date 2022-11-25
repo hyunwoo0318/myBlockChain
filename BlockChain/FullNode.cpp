@@ -1,27 +1,80 @@
 #include "pch.h"
 #include "FullNode.h"
+#include<limits.h>
 
 FullNode::FullNode(int nodeNum)
 {
     this->nodeNum = nodeNum;
 }
 
+Block FullNode::mining()
+{
+    //ë’¤ì— ì—°ê²°ì„ ì‹œë„í•  ë§ˆì§€ë§‰ ë¸”ë¡ì„ ê°€ì ¸ì˜´
+    Block lastBlock = this->blockChain.getLastBlock();
+
+    //nonceë¥¼ ì œì™¸í•œ í—¤ë”ê°’ ì„¤ì •
+    //blockNo ì„¤ì • -> (ì´ì „ ë¸”ë¡ì˜ blockNo) + 1
+    long blockNo = lastBlock.getHeader().getBlockNo() + 1;
+    //mrklTreeë¥¼ ë§Œë“¤ê³  rootì˜ hashê°’ì„ ì–»ì–´ì˜´
+    MerkleTree* mrklTree = new MerkleTree();
+    mrklTree->makeMerkleTree(this->txPool);
+    string mrklRootHash = mrklTree->getRootHash();
+
+    //ì´ì „ ë¸”ë¡ì˜ hashê°’ì„ ê°€ì§€ëŠ” hash pointerì„¤ì •
+    string prevHash = lastBlock.getHashRes();
+    HashPointer* hashPointer = new HashPointer(&lastBlock, prevHash);
+
+    //nonceë¥¼ ì œì™¸í•œ headerê°’ ì„¤ì •
+    Header* header = new Header(blockNo, *hashPointer, mrklRootHash);
+
+    //Blockì„ ìƒì„±
+    Block* block = new Block(*header,*mrklTree);
+
+   while(1)
+   {
+        bool success = false;
+        uint32_t nonce = 0;
+        //nonceë¥¼ ë³€ê²½í•´ê°€ë©° hashê°’ ì°¾ê¸°
+        for (int i = 0; i <= UINT32_MAX; i++)
+        {
+            nonce = i;
+            header->nonce = nonce;
+            string hashRes = hashTX(header);
+            if (stoul(hashRes, nullptr, 0) <= TARGET_NUM)
+            {
+                success = true;
+                break;
+            }
+        }
+        if (success == true)
+            break;
+        else
+        {
+            //nonceë¥¼ ë‹¤ ëŒë ¤ë´¤ëŠ”ë°ë„ ì±„êµ´ì— ì‹¤íŒ¨ -> mrklTreeRootë¥¼ ë°”ê¿”ì•¼í•¨.
+            mrklTree->makeMerkleTree(this->txPool);
+            string mrklRootHash = mrklTree->getRootHash();
+            header->setMrklRootHash(mrklRootHash);
+        }
+    }
+   return *block;    
+}
+
 bool FullNode::validateTX(Transaction tx)
 {
     {
-        //1) ÆÇ¸ÅÇÏ·Á´Â ¹°Ç°ÀÇ ÃÖÁ¾ ¼ÒÀ¯ÀÚ°¡ txÀÇ input°ú °°Àº°¡?
+        //1) ï¿½Ç¸ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ txï¿½ï¿½ inputï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
         EC_KEY* sender = tx.getInput();
         int identifier = tx.getProduct().getIdentifier();
         if (this->blockChain.findProductOwner(identifier) != sender)
             return false;
 
-        //2) immutable ÇÊµå°ª¿¡ º¯È­°¡ ¾ø´Â°¡?
+        //2) immutable ï¿½Êµå°ªï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½?
         Product txProduct = tx.getProduct();
         Product product = this->blockChain.findProduct(identifier);
         if (!(product == txProduct))
             return false;
 
-        //3)¼­¸í °ËÁõ
+        //3)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         EC_KEY* pubKey = tx.getInput();
         string digest = tx.getHashTx();
         const char* c = digest.c_str();
@@ -30,10 +83,10 @@ bool FullNode::validateTX(Transaction tx)
         if (ret != 1)
             return false;
 
-        //validÇÑ TX·Î ÆÇ¸í
-        //TODO :  ´Ù¸¥ fullNodeµé¿¡°Ô ³Ñ±â±â
+        //validï¿½ï¿½ TXï¿½ï¿½ ï¿½Ç¸ï¿½
+        //TODO :  ï¿½Ù¸ï¿½ fullNodeï¿½é¿¡ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½
 
-        //ÀÚ½ÅÀÇ txPool¿¡ txÃß°¡.
+        //ï¿½Ú½ï¿½ï¿½ï¿½ txPoolï¿½ï¿½ txï¿½ß°ï¿½.
         txPool.push_back(tx);
         return true;
     }

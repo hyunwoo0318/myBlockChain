@@ -6,19 +6,19 @@
 ------------*/
 
 Header::Header(long blockNo, HashPointer prev, uint32_t nonce,
-	string mrkl_root_hash)
+	string mrklRootHash)
 {
 	this->blockNo = blockNo;
 	this->prev = prev;
 	this->nonce = nonce;
-	this->mrkl_root_hash = mrkl_root_hash;
+	this->mrklRootHash = mrklRootHash;
 }
 
 /*----------
 	MERKLE TREE
 ------------*/
 
-void MerkleTree::makeMerkleTree(vector<Transaction> tx)
+void MerkleTree::makeMerkleTree(const vector<Transaction> &tx)
 {
 	//tx의 개수
 	int txNum = tx.size();
@@ -113,6 +113,14 @@ vector<Transaction> MerkleTree::findAllTX()
 	return ret;
 }
 
+string MerkleTree::getRootHash()
+{
+	Node rootNode =(*this->node)[0];
+	string rootHash = rootNode.value.first + rootNode.value.second;
+	return rootHash;
+}
+
+
 /*----------
 	BLOCKCHAIN
 ------------*/
@@ -131,6 +139,12 @@ void BlockChain::insertBlock(Block block)
 	}	
 }
 
+Block BlockChain::getLastBlock()
+{
+	vector<Block> bc = this->blockChain;
+	return bc[bc.size() - 1];
+}
+
 EC_KEY* BlockChain::findProductOwner(int identifier)
 {
 	//TODO : branch가 일어난 경우 더 긴 chain을 찾아야함.
@@ -143,4 +157,76 @@ EC_KEY* BlockChain::findProductOwner(int identifier)
 Product BlockChain::findProduct(int identifier)
 {
 	return Product();
+}
+
+void Product::serialize(TCHAR* retBuf)
+{
+	time_t* t = (time_t*)retBuf;
+	*t = this->manufacturedDate; t++;
+	
+	int* i = (int*)t;
+	*i = this->identifier; i++;
+
+	char* c = (char*)i;
+	for (int i = 0; i < 50; i++)
+	{
+		*c = this->modelNo[i];
+		c++;
+	}
+	
+}
+
+void Product::deSerialize(TCHAR* retBuf)
+{
+	time_t* t = (time_t*)retBuf;
+	this->manufacturedDate = *t; t++;
+
+	int* i = (int*)t;
+	this->identifier = *i; i++;
+
+	char* c = (char*)i;
+	for (int i = 0; i < 50; i++)
+	{
+		this->modelNo[i] = *c;
+		c++;
+	}
+	
+}
+
+void Transaction::serialize(TCHAR* buf)
+{
+	int pos = 0;
+	EC_KEY* input = this->input;
+	EC_KEY* output = this->output;
+	ECDSA_SIG* sig = this->sig;
+	TCHAR* cInput = reinterpret_cast<TCHAR*>(input);
+	TCHAR* cOutput = reinterpret_cast<TCHAR*>(output);
+	TCHAR* cSig = reinterpret_cast<TCHAR*>(sig);
+	
+	memcpy(buf, cInput, 32);
+	memcpy(buf + 32, cOutput, 32);
+	memcpy(buf + 64, cSig, 72);
+
+	int* i = (int*)(buf + 136);
+	*i = this->price; i++;
+
+	time_t* t = (time_t*)i;
+	*t = this->tradingDate; t++;
+
+	char* c = (char*)t;
+	for (int i = 0; i < 256; i++)
+	{
+		*c = this->trID[i];
+		c++;
+	}
+	for (int i = 0; i < 256; i++)
+	{
+		*c = this->hashTx[i];
+		c++;
+	}
+	for (int i = 0; i < 50; i++)
+	{
+		*c = this->others[i];
+		c++;
+	}	
 }

@@ -4,7 +4,6 @@
 
 UserNode::UserNode(int nodeID)
 {
-	EC_GROUP* group;
 	random_device rd;
 	mt19937 gen(rd());
 	this->identifier = gen();
@@ -13,6 +12,8 @@ UserNode::UserNode(int nodeID)
 	secpKey = EC_KEY_new_by_curve_name(NID_secp256k1);
 	EC_KEY_generate_key(secpKey);
 
+	int a =ECDSA_size(secpKey);
+
 	BIGNUM const* prv = EC_KEY_get0_private_key(secpKey);
 	EC_POINT const* pub = EC_KEY_get0_public_key(secpKey);
 
@@ -20,41 +21,45 @@ UserNode::UserNode(int nodeID)
 	this->nodeID = nodeID;
 }
 
-Transaction UserNode::createProductTX(string modelNo, int price, string others)
+Transaction UserNode::createProductTX(char* modelNo, int price, char* others)
 {
 
-	Product* product = new Product(time(NULL), modelNo, this->identifier);
+	Product* product = new Product(time(NULL), this->identifier, modelNo);
 	Transaction* tx = new Transaction(NULL, this->ecKey, price, others, product);
 
-	//trID¸¦ ±¸ÇÏ´Â °úÁ¤
+	//trIDï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
 	string hashRes = hashTX(tx);
-	tx->setTrID(hashRes);
+	char* c = const_cast<char*>(hashRes.c_str());
+	tx->setTrID(c);
 
-	//trID¸¦ Æ÷ÇÔÇÑ ÀüÃ¼ tx¸¦ hashÇØ¼­ ÀüÃ¼TXÀÇ hash°ªÀ» ±¸ÇÑ´Ù.
+	//trIDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ txï¿½ï¿½ hashï¿½Ø¼ï¿½ ï¿½ï¿½Ã¼TXï¿½ï¿½ hashï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 	hashRes = hashTX(tx);
-	tx->setHashTx(hashRes);
+	c = const_cast<char*>(hashRes.c_str());
+	tx->setHashTx(c);
 
-	//privateKey¸¦ ÀÌ¿ëÇØ¼­ ¼­¸íÇÑ´Ù.
-	ECDSA_SIG* sig = signTX(hashRes);
+	//privateKeyï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+	ECDSA_SIG* sig = signTX(hashRes);	
 	tx->setSig(sig);
 
 	return *tx;
 }
 
-Transaction UserNode::sellProductTX(Product* product, EC_KEY* dest, string others, int price)
+Transaction UserNode::sellProductTX(Product* product, EC_KEY* dest, char* others, int price)
 {
-	string hashRes;
+	
 	Transaction* tx = new Transaction(this->ecKey, dest, price, others, product);
 
-	//trID¸¦ ±¸ÇÏ´Â °úÁ¤
-	hashRes = hashTX(tx);
-	tx->setTrID(hashRes);
+	//trIDï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	string hashRes = hashTX(tx);
+	char* c = const_cast<char*>(hashRes.c_str());
+	tx->setTrID(c);
 
-	//trID¸¦ Æ÷ÇÔÇÑ ÀüÃ¼ tx¸¦ hashÇØ¼­ ÀüÃ¼TXÀÇ hash°ªÀ» ±¸ÇÑ´Ù.
+	//trIDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ txï¿½ï¿½ hashï¿½Ø¼ï¿½ ï¿½ï¿½Ã¼TXï¿½ï¿½ hashï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 	hashRes = hashTX(tx);
-	tx->setHashTx(hashRes);
+	c = const_cast<char*>(hashRes.c_str());
+	tx->setHashTx(c);
 
-	//privateKey¸¦ ÀÌ¿ëÇØ¼­ ¼­¸íÇÑ´Ù.
+	//privateKeyï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	ECDSA_SIG* sig = signTX(hashRes);
 	tx->setSig(sig);
 

@@ -27,8 +27,12 @@
     <ClInclude Include="IPC.h">
       <Filter>IPC</Filter>
     </ClInclude>
-    <ClInclude Include="UserNode.h" />
-    <ClInclude Include="FullNode.h" />
+    <ClInclude Include="FullNode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="UserNode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -43,7 +47,11 @@
     <ClCompile Include="IPC.cpp">
       <Filter>IPC</Filter>
     </ClCompile>
-    <ClCompile Include="UserNode.cpp" />
-    <ClCompile Include="FullNode.cpp" />
+    <ClCompile Include="FullNode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="UserNode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
