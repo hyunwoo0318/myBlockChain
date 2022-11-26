@@ -1,5 +1,5 @@
 #pragma once
-#include"data.h"
+
 
 void readFile(HANDLE handle, TCHAR* recvBuf);
 
@@ -11,9 +11,9 @@ HANDLE connectPipe(LPCSTR pipeName);
 
 bool writeFile(HANDLE handle,TCHAR* pkt);
 
-bool UserToFullClient(LPCSTR pipeName, Transaction* sendProduct);
+bool UserToFullClient(LPCSTR pipeName, TCHAR* sendTx);
 
-Transaction* UserToFullServer(LPCSTR pipeName);
+//Transaction* UserToFullServer(LPCSTR pipeName);
 
 void FullToFullClient(LPCSTR pipeName);
 

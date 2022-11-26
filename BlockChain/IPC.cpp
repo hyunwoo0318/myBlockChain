@@ -102,31 +102,30 @@ bool writeFile(HANDLE handle, TCHAR* pkt)
 	}
 }
 
-bool UserToFullClient(LPCSTR pipeName, Transaction* sendTx)
+bool UserToFullClient(LPCSTR pipeName, TCHAR* sendTx)
 {
-	TCHAR sendBuf[BUFSIZE];
+	
 	HANDLE h = connectPipe(pipeName);
-	sendTx->serialize(sendBuf);
-	return writeFile(h, sendBuf);	
+	return writeFile(h, sendTx);
 }
 
-Transaction* UserToFullServer(LPCSTR pipeName)
-{
-	TCHAR recvBuf[BUFSIZE];
-	Transaction* tx = new Transaction();
-	while (1)
-	{		
-		HANDLE hU3F0 = makePipe(pipeName);
-		if (openPipe(hU3F0))
-		{
-			readFile(hU3F0, recvBuf);
-			break;
-		}
-		//UserNode·Î ºÎÅÍ´Â tx¸¸ ¹ÞÀ¸¹Ç·Î µû·Î Å¸ÀÔÀ» Ã¼Å©ÇÒ ÇÊ¿ä¾øÀ½		
-		tx->deserialize(recvBuf);
-	}
-	return tx;
-}
+//Transaction* UserToFullServer(LPCSTR pipeName)
+//{
+//	TCHAR recvBuf[BUFSIZE];
+//	Transaction* tx = new Transaction();
+//	while (1)
+//	{		
+//		HANDLE hU3F0 = makePipe(pipeName);
+//		if (openPipe(hU3F0))
+//		{
+//			readFile(hU3F0, recvBuf);
+//			break;
+//		}
+//		//UserNodeï¿½ï¿½ ï¿½ï¿½ï¿½Í´ï¿½ txï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½		
+//		tx->deserialize(recvBuf);
+//	}
+//	return tx;
+//}
 
 void FullToFullClient(LPCSTR pipeName)
 {

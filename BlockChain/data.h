@@ -46,23 +46,26 @@ public:
 
 class Transaction {
 private:	
-	EC_KEY *input; // 송신자의 pub key
-	EC_KEY *output; // 수신자의 pub key
-	ECDSA_SIG* sig;
-	int price;
-	time_t tradingDate;	
-	
+	char input[130]; // 송신자의 pub key
+	char output[130]; // 수신자의 pub key
+	char sigR[64];
+	char sigS[64];
+
 	char trID[256] = "";
-	char hashTx[256];
-	char others[50];
+	char hashTx[256]="";
+	char others[50]="";
 
 	Product product;
+
+	time_t tradingDate;
+	int price;
+		
 public:
-	Transaction() {}
-	Transaction(EC_KEY* input, EC_KEY* output, int price, char* others, Product* product)
+	Transaction(){}
+	Transaction(char* input, char* output, int price, char* others, Product* product)
 	{
-		this->input = input;
-		this->output = output;
+		strcpy(this->input, input);
+		strcpy(this->output, output);
 		this->price = price;
 		strcpy(this->others, others);
 
@@ -72,13 +75,15 @@ public:
 
 	void setTrID(char* trID) { strcpy(this->trID, trID); }
 	char* getTrID() { return this->trID; }
-	void setSig(ECDSA_SIG* sig) { this->sig = sig; }
+	void setSigR(char* sigR) { strcpy(this->sigR, sigR); }
+	void setSigS(char* sigS) { strcpy(this->sigS, sigS); }
 	void setHashTx(char* hashTx) { strcpy(this->hashTx, hashTx); }
 	char* getHashTx() { return this->hashTx; }
-	EC_KEY* getInput() { return this->input; }
-	EC_KEY* getOutput() { return this->output; }
+	char* getInput() { return this->input; }
+	char* getOutput() { return this->output; }
 	Product getProduct() { return this->product; }
-	ECDSA_SIG* getSig() { return this->sig; }
+	char* getSigR() { return this->sigR; }
+	char* getSigS() { return this->sigS; }
 	void serialize(TCHAR* buf);
 	void deserialize(TCHAR* buf);
 };
@@ -135,19 +140,22 @@ public:
 class Header 
 {
 private:
-	long blockNo;
+	int blockNo;
 	HashPointer prev;	
-	string mrklRootHash;
+	char mrklRootHash[512];
 public:
-	uint32_t nonce;
+	unsigned int nonce;
 	Header() {}
-	Header(long blockNo, HashPointer prev, string mrklRootHash)
-		:blockNo(blockNo), prev(prev), mrklRootHash(mrklRootHash) {}
-	Header(long blockNo, HashPointer prev, uint32_t nonce,
+	Header(int blockNo, HashPointer prev, char* mrklRootHash)
+		:blockNo(blockNo), prev(prev) 
+	{
+		strcpy(this->mrklRootHash, mrklRootHash);
+	}
+	Header(long blockNo, HashPointer prev, unsigned int nonce,
 		string mrklRootHash);	
-	long getBlockNo() { return this->blockNo; }
+	int getBlockNo() { return this->blockNo; }
 	void setHashPointer(HashPointer hashPointer) { this->prev = hashPointer; }
-	void setMrklRootHash(string mrklRootHash) { this->mrklRootHash = mrklRootHash; }
+	void setMrklRootHash(char* mrklRootHash) { strcpy(this->mrklRootHash, mrklRootHash); }
 };
 
 /*----------
@@ -158,7 +166,7 @@ class Block
 private:
 	Header header;
 	MerkleTree merkleTree;
-	string hashRes;
+	char hashRes[256];
 public:
 	
 	Block() {}
@@ -168,11 +176,11 @@ public:
 		this->header = header;
 		this->merkleTree = merkleTree;
 		string hashRes = hashTX(&header);
-		this->hashRes = hashRes;
+		strcpy(this->hashRes, hashRes.c_str());
 	}
 	Header getHeader() { return this->header; }
-	void setHashRes(string hashRes) { this->hashRes = hashRes; }
-	string getHashRes() { return hashRes; }
+	void setHashRes(char* hashRes) { strcpy(this->hashRes, hashRes); }
+	char* getHashRes() { return hashRes; }
 };
 
 /*----------
@@ -188,8 +196,9 @@ public:
 	void insertBlock(Block block);
 	Block getLastBlock();
 	//TODO : 해당 identifier를 가진 product를 소유한 주인을 찾음
-	EC_KEY* findProductOwner(int identifier);
+	char* findProductOwner(int identifier);
 	Product findProduct(int identifier);
 };
 
+EC_KEY* makeEcKey(const char* priv);
 

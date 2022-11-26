@@ -145,11 +145,11 @@ Block BlockChain::getLastBlock()
 	return bc[bc.size() - 1];
 }
 
-EC_KEY* BlockChain::findProductOwner(int identifier)
+char* BlockChain::findProductOwner(int identifier)
 {
 	//TODO : branch가 일어난 경우 더 긴 chain을 찾아야함.
 	//block의 개수를 어떻게 알지 -> blockNum을 이용?
-	EC_KEY* temp=NULL;
+	char* temp=NULL;
 	return temp;
 
 }
@@ -195,43 +195,107 @@ void Product::deSerialize(TCHAR* retBuf)
 
 void Transaction::serialize(TCHAR* buf)
 {
-	int pos = 0;
-	EC_KEY* input = this->input;
-	EC_KEY* output = this->output;
-	ECDSA_SIG* sig = this->sig;
-	TCHAR* cInput = reinterpret_cast<TCHAR*>(input);
-	TCHAR* cOutput = reinterpret_cast<TCHAR*>(output);
-	TCHAR* cSig = reinterpret_cast<TCHAR*>(sig);
+	//input,outpit serialize
+	short offset = 0;
+	memcpy(buf + offset, this->input, 130 * sizeof(char));
+	offset += 130 * sizeof(char) / 2;
+	memcpy(buf + offset, this->output, 130 * sizeof(char));
+	offset += 130 * sizeof(char) / 2;
+
+	//sig serialize
+	memcpy(buf + offset, this->sigR,64 * sizeof(char));
+	offset += 64 * sizeof(char) / 2;
+
+	memcpy(buf + offset, this->sigS, 64 * sizeof(char));
+	offset += 64 * sizeof(char) / 2;
+
+	//trID, hashTx, others serialize
+	memcpy(buf + offset, this->trID, 256 * sizeof(char));
+	offset += 128 * sizeof(char);
+	memcpy(buf + offset, this->hashTx, 256 * sizeof(char));
+	offset += 128 * sizeof(char);
+	memcpy(buf + offset, this->others, 50 * sizeof(char));
+	offset += 25 * sizeof(char);
+
+	//price, tradingDate serialize
+	time_t* t = &(this->tradingDate);
+	memcpy(buf + offset, t, sizeof(time_t));
+	offset += 4;
+
+	int* i = &(this->price);
+	memcpy(buf + offset, i, sizeof(int));
+	offset += 2;
+
+	/*TCHAR product[20];
+	this->product.serialize(product);
+
+	memcpy(buf + offset, product,2 * sizeof(TCHAR));*/
 	
-	memcpy(buf, cInput, 32);
-	memcpy(buf + 32, cOutput, 32);
-	memcpy(buf + 64, cSig, 72);
-
-	int* i = (int*)(buf + 136);
-	*i = this->price; i++;
-
-	time_t* t = (time_t*)i;
-	*t = this->tradingDate; t++;
-
-	char* c = (char*)t;
-	for (int i = 0; i < 256; i++)
-	{
-		*c = this->trID[i];
-		c++;
-	}
-	for (int i = 0; i < 256; i++)
-	{
-		*c = this->hashTx[i];
-		c++;
-	}
-	for (int i = 0; i < 50; i++)
-	{
-		*c = this->others[i];
-		c++;
-	}	
 }
 
 void Transaction::deserialize(TCHAR* buf)
 {
+	short offset = 0;
+
+	//input,outpit deserialize		
+	memcpy(this->input, buf+offset, 130 * sizeof(char));
+	offset += 65 * sizeof(char);
+
+	memcpy(this->output, buf + offset, 130 * sizeof(char));
+	offset += 65 * sizeof(char);	
+
+	//sig deserialize
+	memcpy(this->sigR, buf + offset, 64 * sizeof(char));
+	offset += 32 * sizeof(char);
+
+	memcpy(this->sigS, buf + offset, 64 * sizeof(char));
+	offset += 32 * sizeof(char);
+
+	//trID, hashTx, others deserialize
+	memcpy(this->trID, buf + offset, 256 * sizeof(char));
+	offset += 128 * sizeof(char);
+	memcpy(this->hashTx, buf + offset, 256 * sizeof(char));
+	offset += 128 * sizeof(char);
+	memcpy(this->others, buf + offset, 50 * sizeof(char));
+	offset += 25 * sizeof(char);
+
+	//price, tradingDate deserialize
+	time_t* t = &(this->tradingDate);
+	memcpy(t,buf + offset, sizeof(time_t));
+	this->tradingDate = *t;
+	offset += 8;
+
+	int* i = &(this->price);
+	memcpy(i,buf + offset, sizeof(int));
+	this->price = *i;
+	offset += 4;
+
+	//TCHAR* product = nullptr;
+	//memcpy(product,buf + offset, 2);
+	//offset += 2;
+
+	//this->product.deSerialize(product);
 	
+}
+
+EC_KEY* makeEcKey(const char* priv)
+{
+	EC_KEY* eckey = NULL;
+	EC_POINT* pub_key = NULL;
+	const EC_GROUP* group = NULL;
+
+	BIGNUM* res = BN_new();
+	BN_CTX* ctx = BN_CTX_new();
+
+	BN_hex2bn(&res, priv);
+	eckey = EC_KEY_new_by_curve_name(NID_secp256k1);
+	group = EC_KEY_get0_group(eckey);
+	pub_key = EC_POINT_new(group);
+
+	EC_KEY_set_private_key(eckey, res);
+		
+	EC_POINT_mul(group, pub_key, res, NULL, NULL, ctx);
+	
+	EC_KEY_set_public_key(eckey, pub_key);
+	return eckey;
 }
