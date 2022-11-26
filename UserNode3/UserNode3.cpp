@@ -1,9 +1,11 @@
 ﻿#include"pch.h"
 #include"UserNode.h"
 
+
 int main()
 {
 	UserNode* userNode3 = new UserNode(3);
+	userNode3->setEcKey(PRIV3);
 	PipeName pipeInfo;
 	
 	//임의의 tx를 주기적으로 생성함
@@ -13,8 +15,8 @@ int main()
 	while(1)
 	{
 		LPCSTR pipeName = pipeInfo.U3F0;		
-		if (UserToFullClient(pipeName, tx))
-			break;
+		/*if (UserToFullClient(pipeName, tx))
+			break;*/
 	}
 
 

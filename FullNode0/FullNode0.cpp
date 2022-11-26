@@ -6,10 +6,11 @@ int main()
 {	
 	PipeName pInfo;
 	FullNode* fullNode0 = new FullNode(0);
+	
 		
 	//U3과 연결
 	LPCSTR pipeName = pInfo.U3F0;
-	Transaction* tx = UserToFullServer(pipeName);
+	//Transaction* tx = UserToFullServer(pipeName);
 
 	//F1과 연결
 	{
