@@ -16,11 +16,7 @@ public:
     bool validateTX(Transaction tx);
     EC_KEY* findKey(char* pubKey);
     void setKeyList();
+    void addTx(Transaction tx);
+    void UserToFullServer(LPCSTR pipeName);
     
 };
-
-//TODO List
-//1. full node�� ��� block�� TX�� ����.
-//2. valid�� tx�� ä�� ������ block�� �Ѱ���.
-//3. userNode�δ� �ƹ��͵� ����������
-//4. FullNode, userNode���� �־��� topology��� ����.

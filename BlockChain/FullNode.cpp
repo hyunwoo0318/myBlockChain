@@ -15,21 +15,22 @@ Block FullNode::mining()
 
     //nonce를 제외한 헤더값 설정
     //blockNo 설정 -> (이전 블록의 blockNo) + 1
-    long blockNo = lastBlock.getHeader().getBlockNo() + 1;
+    int blockNo = lastBlock.getHeader().getBlockNo() + 1;
     //mrklTree를 만들고 root의 hash값을 얻어옴
     MerkleTree* mrklTree = new MerkleTree();
     mrklTree->makeMerkleTree(this->txPool);
     string mrklRootHash = mrklTree->getRootHash();
 
     //이전 블록의 hash값을 가지는 hash pointer설정
-    string prevHash = lastBlock.getHashRes();
+    char* prevHash = lastBlock.getHashRes();
     HashPointer* hashPointer = new HashPointer(&lastBlock, prevHash);
 
     //nonce를 제외한 header값 설정
-    Header* header = new Header(blockNo, *hashPointer, mrklRootHash);
+    char* rootHash = const_cast<char*>(mrklRootHash.c_str());
+    Header* header = new Header(blockNo, *hashPointer, rootHash);
 
     //Block을 생성
-    Block* block = new Block(*header,*mrklTree);
+    Block* block = new Block(*header,mrklTree);
 
    while(1)
    {
@@ -52,9 +53,9 @@ Block FullNode::mining()
         else
         {
             //nonce를 다 돌려봤는데도 채굴에 실패 -> mrklTreeRoot를 바꿔야함.
-            mrklTree->makeMerkleTree(this->txPool);
+           /* mrklTree->makeMerkleTree(this->txPool);
             string mrklRootHash = mrklTree->getRootHash();
-            header->setMrklRootHash(mrklRootHash);
+            header->setMrklRootHash(mrklRootHash.c_str());*/
         }
     }
    return *block;    
@@ -121,4 +122,66 @@ void FullNode::setKeyList()
 
     ecKey = makeEcKey(PRIV3);
     (this->keyList).push_back(ecKey);
+}
+
+void FullNode::addTx(Transaction tx)
+{
+    (this->txPool).push_back(tx);
+}
+
+void FullNode::UserToFullServer(LPCSTR pipeName)
+{
+    DWORD readSize;
+    TCHAR* recvBuf;
+    while (1)
+    {
+        bool s = false;
+        while (1)
+        {
+            HANDLE h = CreateNamedPipeA(
+                pipeName,
+                PIPE_ACCESS_DUPLEX,
+                PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+                PIPE_UNLIMITED_INSTANCES,
+                BUFSIZE,
+                BUFSIZE,
+                20000,
+                NULL);
+            if (h == INVALID_HANDLE_VALUE)
+                break;
+            s = ConnectNamedPipe(h, NULL);
+            if (GetLastError() == ERROR_PIPE_CONNECTED)
+                s = true;
+            if (s)
+            {
+                bool success = false;
+
+                success = ReadFile(
+                    h,
+                    recvBuf,
+                    BUFSIZE * sizeof(TCHAR),
+                    &readSize,
+                    NULL);
+
+
+                if (!success || readSize == 0)
+                {
+                    cout << "read Error!" << endl;
+                    break;
+                }
+                else
+                {
+                    Transaction* tx = new Transaction();
+                    tx->deserialize(recvBuf);
+                    (this->txPool).push_back(*tx);
+                }
+            }
+            else
+            {
+                CloseHandle(h);
+            }
+        }
+    }
+
+
 }

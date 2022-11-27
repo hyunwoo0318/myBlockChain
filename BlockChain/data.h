@@ -51,9 +51,9 @@ private:
 	char sigR[64];
 	char sigS[64];
 
-	char trID[256] = "";
-	char hashTx[256]="";
-	char others[50]="";
+	char trID[32] = "";
+	char hashTx[32]="";
+	char others[20]="";
 
 	Product product;
 
@@ -84,7 +84,7 @@ public:
 	Product getProduct() { return this->product; }
 	char* getSigR() { return this->sigR; }
 	char* getSigS() { return this->sigS; }
-	void serialize(TCHAR* buf);
+	int serialize(TCHAR* buf);
 	void deserialize(TCHAR* buf);
 };
 
@@ -100,17 +100,24 @@ struct Node
 
 class MerkleTree
 {
-private:
-	vector<Node> node[100];
-	vector<Transaction> leafNode[100];
 public:
-	MerkleTree() {}	
+	int nodeNum;
+	int txNum;
+	vector<Node> node;
+	vector<Transaction> leafNode;
+
+	MerkleTree() 
+	{
+		node.resize(30);
+		leafNode.resize(30);
+	}	
 	// 시작할때 tx의 순서를 무작위로 섞음 -> nonce값 찾기 실패했을때를 대비
-	void makeMerkleTree(const vector<Transaction> &tx);
+	void makeMerkleTree(vector<Transaction> &tx);
 	//해당 block에 존재하는 모든 TX찾기.
 	vector<Transaction> findAllTX();
 	string getRootHash();
-
+	int serialize(TCHAR* buf);
+	void deserialize(TCHAR* buf);
 };
 
 
@@ -122,14 +129,20 @@ class HashPointer
 {
 private:
 	Block* pointer = nullptr;
-	string prevHash;
+	char prevHash[32];
 public:
 	HashPointer() {}
-	HashPointer(Block* pointer, string prevHash)
+	HashPointer(Block* pointer, char* prevHash)
 	{
 		this->pointer = pointer;
-		this->prevHash = prevHash;
+		strcpy(this->prevHash, prevHash);
 	}
+	void setPrevHash(char* prevHash)
+	{
+		strcpy(this->prevHash, prevHash);
+	}
+	char* getPrevHash() { return this->prevHash; }
+
 };
 
 
@@ -142,7 +155,7 @@ class Header
 private:
 	int blockNo;
 	HashPointer prev;	
-	char mrklRootHash[512];
+	char mrklRootHash[64];
 public:
 	unsigned int nonce;
 	Header() {}
@@ -151,9 +164,12 @@ public:
 	{
 		strcpy(this->mrklRootHash, mrklRootHash);
 	}
-	Header(long blockNo, HashPointer prev, unsigned int nonce,
-		string mrklRootHash);	
+	Header(int blockNo, HashPointer prev, unsigned int nonce,
+		char* mrklRootHash);	
 	int getBlockNo() { return this->blockNo; }
+	char* getMrklRootHash() { return this->mrklRootHash; }
+	HashPointer* getHashPointer() { return &(this->prev); }
+	void setBlockNo(int blockNo) { this->blockNo = blockNo; }
 	void setHashPointer(HashPointer hashPointer) { this->prev = hashPointer; }
 	void setMrklRootHash(char* mrklRootHash) { strcpy(this->mrklRootHash, mrklRootHash); }
 };
@@ -164,14 +180,16 @@ public:
 class Block
 {
 private:
-	Header header;
-	MerkleTree merkleTree;
-	char hashRes[256];
-public:
+	Header header;	
+	char hashRes[32];
+	MerkleTree* merkleTree;
+public:	
+	Block()
+	{
+		this->merkleTree = new MerkleTree();
+	}
 	
-	Block() {}
-	
-	Block(Header header, MerkleTree merkleTree)
+	Block(Header header, MerkleTree* merkleTree)
 	{
 		this->header = header;
 		this->merkleTree = merkleTree;
@@ -181,6 +199,8 @@ public:
 	Header getHeader() { return this->header; }
 	void setHashRes(char* hashRes) { strcpy(this->hashRes, hashRes); }
 	char* getHashRes() { return hashRes; }
+	void serialize(TCHAR* buf);
+	void deSerialize(TCHAR* buf);
 };
 
 /*----------

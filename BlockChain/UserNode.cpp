@@ -13,11 +13,11 @@ UserNode::UserNode(int nodeID)
 	this->ecKey = (this->keyList)[nodeID];
 }
 
-Transaction UserNode::createProductTX(char* modelNo, int price, char* others)
+Transaction* UserNode::createProductTX(char* modelNo, int price, char* others)
 {
-
+	char zero[130] = {};
 	Product* product = new Product(time(NULL), this->identifier, modelNo);
-	Transaction* tx = new Transaction(NULL, getPubKey(), price, others, product);
+	Transaction* tx = new Transaction(zero, getPubKey(), price, others, product);
 
 	//trID�� ���ϴ� ����
 	string hashRes = hashTX(tx);
@@ -39,7 +39,7 @@ Transaction UserNode::createProductTX(char* modelNo, int price, char* others)
 	tx->setSigR(sigR);
 	tx->setSigS(sigS);
 
-	return *tx;
+	return tx;
 }
 
 Transaction* UserNode::sellProductTX(Product* product, char* dest, char* others, int price)

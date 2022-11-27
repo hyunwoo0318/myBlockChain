@@ -12,7 +12,7 @@ private:
 public:
 	UserNode(int nodeID);	
 
-	Transaction createProductTX(char* modelNo, int price, char* others);
+	Transaction* createProductTX(char* modelNo, int price, char* others);
 	
 
 	Transaction* sellProductTX(Product* product, char* dest, char* others, int price);

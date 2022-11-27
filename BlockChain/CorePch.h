@@ -30,18 +30,10 @@
 #include<thread>
 #include<mutex>
 #include<tchar.h>
-#include <openssl/pem.h>
+#include <process.h>
 #include"PipeName.h"
 
 using namespace std;
-
-#include"IPC.h"
-
-extern EC_KEY* a;
-extern EC_KEY* b;
-extern EC_KEY* a;
-extern EC_KEY* a;
-
 
 template<class T>
 string hashTX(T* t)

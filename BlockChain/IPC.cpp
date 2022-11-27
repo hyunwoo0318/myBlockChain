@@ -1,145 +1,60 @@
 #include"IPC.h"
 #include"pch.h"
 
-void readFile(HANDLE handle, TCHAR* recvBuf)
-{
-	bool success = false;
-	DWORD readSize;
 
-	success = ReadFile(
-		handle,
-		recvBuf,
-		BUFSIZE * sizeof(TCHAR),
-		&readSize,
-		NULL);
-
-	if (!success || readSize == 0)
-	{
-		cout << "read Error!" << endl;		
-	}
-
-	FlushFileBuffers(handle);	
-}
-
-HANDLE makePipe(LPCSTR pipeName)
+//usernode가 fullNode에게 tx를 보냄.
+bool UserToFullClient(LPCSTR pipeName, TCHAR* pkt)
 {
 	HANDLE hPipe;
-	hPipe = CreateNamedPipeA(
-		pipeName,
-		PIPE_ACCESS_DUPLEX,
-		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-		1,
-		BUFSIZE,
-		BUFSIZE,
-		20000,
-		NULL);
-	return hPipe;
-}
+	DWORD writeSize;
+	DWORD mode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
 
-bool openPipe(HANDLE handle)
-{
 	bool success = false;
-	success = ConnectNamedPipe(handle, NULL);
-	return success;
-}
 
-HANDLE connectPipe(LPCSTR pipeName)
-{
-	HANDLE hPipe;
-	DWORD mode = PIPE_READMODE_BYTE | PIPE_WAIT;
-	while (1)
-	{
-		hPipe = CreateFileA(
+	hPipe = CreateFileA(
 			pipeName,
 			GENERIC_READ | GENERIC_WRITE,
-			0,
+			FILE_SHARE_READ | FILE_SHARE_WRITE,
 			NULL,
 			OPEN_EXISTING,
-			0,
+			FILE_ATTRIBUTE_NORMAL,
 			NULL
-		);
-
-		if (hPipe != INVALID_HANDLE_VALUE)
-			break;
+	);	
+		
+	if (hPipe == INVALID_HANDLE_VALUE)
+	{
 		if (GetLastError() != ERROR_PIPE_BUSY)
 		{
-			cout << "error in create File ";
-			break;
+			auto msg = GetLastError();
+			cout << "error in create File " << msg;
+			return false;
 		}
-		if (WaitNamedPipeA(pipeName, 20000) == false)
+		else if (WaitNamedPipeA(pipeName, 10000) == false)
 		{
 			cout << "error in connect ";
-			break;
+			return false;
 		}
 	}
-	SetNamedPipeHandleState(
-		hPipe,
-		&mode,
-		NULL, NULL);
-	return hPipe;
-}
-
-bool writeFile(HANDLE handle, TCHAR* pkt)
-{
-	bool success = false;
 	
-	DWORD writeSize;
+	SetNamedPipeHandleState(hPipe, &mode, NULL, NULL);
+
 	success = WriteFile(
-		handle,
+		hPipe,
 		pkt,
 		1024 * sizeof(TCHAR),
 		&writeSize,
 		NULL);
-	if (success)
+	if (success = false)
 	{
-		cout << "send message success" << endl;
-		return true;
-	}
+		cout << "write error! ";
+		return false;
+	}		
 	else
 	{
-		cout << "send message failed" << endl;
-		return false;
+		FlushFileBuffers(hPipe);
+		DisconnectNamedPipe(hPipe);
+		return true;
 	}
+		
 }
 
-bool UserToFullClient(LPCSTR pipeName, TCHAR* sendTx)
-{
-	
-	HANDLE h = connectPipe(pipeName);
-	return writeFile(h, sendTx);
-}
-
-//Transaction* UserToFullServer(LPCSTR pipeName)
-//{
-//	TCHAR recvBuf[BUFSIZE];
-//	Transaction* tx = new Transaction();
-//	while (1)
-//	{		
-//		HANDLE hU3F0 = makePipe(pipeName);
-//		if (openPipe(hU3F0))
-//		{
-//			readFile(hU3F0, recvBuf);
-//			break;
-//		}
-//		//UserNode�� ���ʹ� tx�� �����Ƿ� ���� Ÿ���� üũ�� �ʿ����		
-//		tx->deserialize(recvBuf);
-//	}
-//	return tx;
-//}
-
-void FullToFullClient(LPCSTR pipeName)
-{
-
-}
-
-void FullToFUllServer(LPCSTR pipeName)
-{
-}
-
-void MasterToFullClient(LPCSTR pipeName)
-{
-}
-
-void MasterToFullServer(LPCSTR pipeName)
-{
-}
