@@ -3,6 +3,8 @@
 #include"UserNode.h"
 #pragma warning(disable : 4996)
 
+TCHAR buf[BUFSIZE * 5000];
+
 int main()
 {	
 	UserNode* u = new UserNode(1);	
@@ -48,48 +50,53 @@ int main()
 	//	cout << 3;
 	//
 
-	char msg[] = "modelno";
-	char others[] = "others";
-	Product * p = new Product(time(nullptr), 123123, msg);
 
-	Transaction* t = u->sellProductTX(p, destPub, others, 13000);
-	TCHAR buf[BUFSIZE * 3];
-	t->serialize(buf);
-	Transaction* tx = new Transaction();
-	tx->deserialize(buf);
+	//TEST mrklTree
+	char msg1[] = "msg1";
+	char msg2[] = "msg2";
+	char msg3[] = "msg3";
+	char md[] = "modelNo";
 
-	if (*(t->getHashTx()) == *(tx->getHashTx()))
+	vector<Transaction> vv;
+
+	Product * p = new Product(time(nullptr), 123123, md);
+
+	Transaction* t1 = u->sellProductTX(p, destPub, msg1, 11111);
+	Transaction* t2 = u->sellProductTX(p, destPub, msg2, 22222);
+	Transaction* t3 = u->sellProductTX(p, destPub, msg3, 33333);
+
+	vv.push_back(*t1);
+	vv.push_back(*t2);
+	vv.push_back(*t3);
+
+	MerkleTree* mk = new MerkleTree();
+	mk->makeMerkleTree(vv);
+	/*mk->serialize(buf);
+
+	MerkleTree* mm = new MerkleTree();
+	mm->deserialize(buf);
+
+	string s = (mm->node)[0].value.first;
+	string ss = (mk->node)[0].value.first;
+
+	if ((mm->node)[0].value.first == (mk->node)[0].value.first)
 		cout << 1 << endl;
 	else
-		cout <<  2 << endl;
+		cout << 2 << endl;*/
 
-	if (*(t->getInput()) == *(tx->getInput()))
-		cout << 1 << endl;
-	else
-		cout << 2 << endl;
+	//TEST block
 
-	if (*(t->getOutput()) == *(tx->getOutput()))
-		cout << 1 << endl;
-	else
-		cout << 2 << endl;
+	/*char prevHash[32] = "33333333333333";
+	char mrkl[64] = "999999999999999999999999";
+	HashPointer* hp = new HashPointer(NULL, prevHash);
+	Header* h = new Header(3, *hp, mrkl);
+	h->nonce = 111;
 
-	if (*(t->getSigR()) == *(tx->getSigR()))
-		cout << 1 << endl;
-	else
-		cout << 2 << endl;
+	Block* b = new Block(*h, mk);
+	b->serialize(buf);
 
-	if (*(t->getSigS()) == *(tx->getSigS()))
-		cout << 1 << endl;
-	else
-		cout << 2 << endl;
-
-	if (*(t->getTrID()) == *(tx->getTrID()))
-		cout << 1 << endl;
-	else
-		cout << 2 << endl;
-
-
-
+	Block* c = new Block();
+	c->deSerialize(buf);*/
 
 
 }

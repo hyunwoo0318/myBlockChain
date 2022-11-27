@@ -1,5 +1,6 @@
 ﻿#include"pch.h"
 #include"FullNode.h"
+#include"IPC.h"
 
 //F5는 F2, F4과 연결
 int main()
